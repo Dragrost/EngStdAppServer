@@ -14,15 +14,15 @@ public class Server {
     private static Connection conn;
     private static PreparedStatement pst;
     private static void connectToBD() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/EngStdBD";
+        String url = "jdbc:postgresql://localhost:5432/postgres";
         String user = "postgres";
         String password = "Lbvf04Lfd4568520";
         conn = DriverManager.getConnection(url, user, password);
-        pst = conn.prepareStatement("insert into registrbd (login, password) values ('text', 'text');");
+        pst = conn.prepareStatement("insert into registrbd (login, password) values (?, ?);");
     }
     private static void registration (String[] info) throws SQLException {
         pst.setString(1,info[1]);
-        pst.setString(1,info[2]);
+        pst.setString(2,info[2]);
         System.out.println(info[1]);
         System.out.println(info[2]);
         pst.executeUpdate();
