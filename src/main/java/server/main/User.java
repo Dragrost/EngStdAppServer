@@ -5,11 +5,13 @@ import java.util.UUID;
 
 public class User
 {
-    private String response;
-    public String registration(PreparedStatement pst, String[] info)
+    private final int MAX_WORDS = 1025;
+    private String response = "";
+    public String registration(Connection conn, String[] info)
     {
         try {
             UUID id = UUID.randomUUID();
+            PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password) values (?, ?, ?);");
             pst.setString(1, String.valueOf(id));
             pst.setString(2,info[1]);
             pst.setString(3,info[2]);
@@ -36,6 +38,34 @@ public class User
             response = "errorKey";
         }
         System.out.println(response);
+        return response;
+    }
+    public String randomGeneration(Connection conn)
+    {
+        final int MAX_QUESTIONS = 20;
+        String similarId = "";
+        int randKey;
+        try{
+            int i = 0;
+            while (i < MAX_QUESTIONS)
+            {
+                randKey = (int)(Math.random() * MAX_WORDS) + 1;
+                if (!similarId.contains(String.valueOf(randKey)))
+                {
+                    PreparedStatement rs = conn.prepareStatement("SELECT engwords, ruswords FROM engruswords WHERE id = '" + randKey + "'");
+                    ResultSet result = rs.executeQuery();
+                    result.next();
+                    response += result.getString(1) + " ";
+                    response += result.getString(2);
+                    response += "||";
+                    similarId += randKey + " ";
+                    i++;
+                }
+            }
+        }catch (SQLException e)
+        {
+            response = "errorKey";
+        }
         return response;
     }
 }
