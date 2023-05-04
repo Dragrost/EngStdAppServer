@@ -47,7 +47,7 @@ public class User
         int randKey;
         try{
             int i = 0;
-            while (i < MAX_QUESTIONS)
+            while (i < MAX_QUESTIONS*4)
             {
                 randKey = (int)(Math.random() * MAX_WORDS) + 1;
                 if (!similarId.contains(String.valueOf(randKey)))
@@ -55,9 +55,9 @@ public class User
                     PreparedStatement rs = conn.prepareStatement("SELECT engwords, ruswords FROM engruswords WHERE id = '" + randKey + "'");
                     ResultSet result = rs.executeQuery();
                     result.next();
-                    response += result.getString(1) + " ";
+                    response += result.getString(1) + "!";
                     response += result.getString(2);
-                    response += "||";
+                    response += "!";
                     similarId += randKey + " ";
                     i++;
                 }
