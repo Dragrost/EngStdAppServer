@@ -31,6 +31,9 @@ public class Server {
             case "RandomGeneration":
                 response = user.randomGeneration(conn);
                 break;
+            case "AddWordsProgress":
+                response = user.AddWords(conn, strings);
+                break;
             default:
                 System.out.println("Что это за херня?!");
                 break;

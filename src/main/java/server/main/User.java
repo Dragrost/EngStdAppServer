@@ -68,4 +68,10 @@ public class User
         }
         return response;
     }
+
+    public String AddWords(Connection conn, String[] info)
+    {
+        System.out.println(info);
+        return response;
+    }
 }
