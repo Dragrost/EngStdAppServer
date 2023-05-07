@@ -1,20 +1,44 @@
 package server.main;
-
 import java.sql.*;
-import java.util.UUID;
 
 public class User
 {
     private final int MAX_WORDS = 1025;
     private String response = "";
+
+    public String getID(Connection conn, String[] info)
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT id FROM registrbd WHERE login = '" + info[1] + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+
+            response = result.getString(1);
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return response;
+    }
+    public String getLogin(Connection conn, String[] info)
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT login FROM registrbd WHERE id = '" + info[1] + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+
+            response = result.getString(1);
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return response;
+    }
     public String registration(Connection conn, String[] info)
     {
         try {
-            UUID id = UUID.randomUUID();
             PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password) values (?, ?, ?);");
-            pst.setString(1, String.valueOf(id));
-            pst.setString(2,info[1]);
-            pst.setString(3,info[2]);
+            pst.setString(1,info[1]);
+            pst.setString(2,info[2]);
+            pst.setString(3,info[3]);
             pst.executeUpdate();
             response = "allGood";
         } catch (SQLException e) {

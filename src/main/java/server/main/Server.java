@@ -22,6 +22,12 @@ public class Server {
         String command = strings[0];
         switch (command)
         {
+            case "GetID":
+                response = user.getID(conn,strings);
+                break;
+            case "GetLogin":
+                response = user.getLogin(conn,strings);
+                break;
             case "Registration":
                 response = user.registration(conn,strings);
                 break;
