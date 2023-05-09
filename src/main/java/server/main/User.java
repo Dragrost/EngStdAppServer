@@ -1,11 +1,119 @@
 package server.main;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class User
 {
     private final int MAX_WORDS = 1025;
     private String response = "";
+    private final ArrayList<String> correctWords = new ArrayList<>();
+    private final ArrayList<String> incorrectWords = new ArrayList<>();
+    private ArrayList<String> researchedWords = new ArrayList<>();
+    private void processStrings(String[] info)
+    {
+        final int CORRECT_WORDS = 2;
+        final int INCORRECT_WORDS = 3;
+        try {Collections.addAll(correctWords, info[CORRECT_WORDS].split("!"));}
+        catch (Exception e) {correctWords.add("");}
+        try {Collections.addAll(incorrectWords, info[INCORRECT_WORDS].split("!"));}
+        catch (Exception e) {incorrectWords.add("");}
+    }
 
+    private void getWordsID(Connection conn)
+    {
+        try {
+            for (int i = 0; i < correctWords.size();i++)
+            {
+                PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + correctWords.get(i) + "'");
+                ResultSet result = rs.executeQuery();
+                result.next();
+                correctWords.set(i, result.getString(1));
+            }
+            for (int i = 0; i < incorrectWords.size();i++)
+            {
+                PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + incorrectWords.get(i) + "'");
+                ResultSet result = rs.executeQuery();
+                result.next();
+                incorrectWords.set(i, result.getString(1));
+            }
+            response = "allGood";
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+    }
+
+    private ArrayList<String> getResearched(Connection conn, String[] info)
+    {
+        ArrayList<String> researched = new ArrayList<>();
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT correctwords FROM registrbd where id = '" + info[1] + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+            Array arr = result.getArray(1);
+            Collections.addAll(researched,(String[]) arr.getArray());
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return researched;
+    }
+
+    public int getQuantityCorrWords(Connection conn, String[] info)
+    {
+        final int ID = 1;
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT progress FROM registrbd WHERE id = '" + info[ID] + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+
+            return result.getInt(1);
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return 0;
+    }
+    private void arrayReBuild(Connection conn, String[] info)
+    {
+        int progress = getQuantityCorrWords(conn,info);
+        researchedWords = getResearched(conn, info);
+        for (String correctWord : correctWords) {
+            if (!researchedWords.contains(correctWord)) {
+                researchedWords.add(correctWord);
+                progress++;
+            }
+
+        }
+        for (String incorrectWord : incorrectWords) {
+            if (researchedWords.contains(incorrectWord)) {
+                researchedWords.remove(incorrectWord);
+                progress--;
+            }
+
+        }
+        sendData(conn, progress,info);
+    }
+
+    private void sendData(Connection conn, int progress, String[] info)
+    {
+        try {
+            String[] result = researchedWords.toArray(new String[0]);
+            Array addArr = conn.createArrayOf("text",result);
+
+            PreparedStatement pst = conn.prepareStatement("UPDATE registrbd SET correctwords = ? WHERE id = ?");
+            pst.setArray(1, addArr);
+            pst.setString(2,info[1]);
+            pst.executeUpdate();
+
+            pst = conn.prepareStatement("UPDATE registrbd SET progress = ? WHERE id = ?");
+            pst.setInt(1,progress);
+            pst.setString(2,info[1]);
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Что-то не так");
+        }
+    }
     public String getID(Connection conn, String[] info)
     {
         try {
@@ -35,10 +143,16 @@ public class User
     public String registration(Connection conn, String[] info)
     {
         try {
-            PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password) values (?, ?, ?);");
+            PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password, progress, correctwords) values (?, ?, ?, ?, ?);");
+
+            String[] result = {};
+            Array addArr = conn.createArrayOf("text",result);
+
             pst.setString(1,info[1]);
             pst.setString(2,info[2]);
             pst.setString(3,info[3]);
+            pst.setInt(4,0);
+            pst.setArray(5,addArr);
             pst.executeUpdate();
             response = "allGood";
         } catch (SQLException e) {
@@ -95,7 +209,9 @@ public class User
 
     public String AddWords(Connection conn, String[] info)
     {
-        System.out.println(info);
+        processStrings(info);//Слова превращаем в ID
+        getWordsID(conn);//Получаем массив ID слов.
+        arrayReBuild(conn, info); //Пробегаемся по каждому слову, если его нет, добавляем в исходный массив.
         return response;
     }
 }
