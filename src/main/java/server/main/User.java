@@ -207,11 +207,41 @@ public class User
         return response;
     }
 
+    public String getAllQuestions(Connection conn)
+    {
+        try{
+            PreparedStatement rs = conn.prepareStatement("SELECT engwords,ruswords FROM engruswords");
+            ResultSet result = rs.executeQuery();
+            while (result.next()) {
+                response += result.getString(1) + "!";
+                response += result.getString(2);
+                response += "!";
+            }
+        }
+        catch (SQLException e)
+        {
+            response = "errorKey";
+        }
+        return response;
+    }
     public String AddWords(Connection conn, String[] info)
     {
         processStrings(info);//Слова превращаем в ID
         getWordsID(conn);//Получаем массив ID слов.
         arrayReBuild(conn, info); //Пробегаемся по каждому слову, если его нет, добавляем в исходный массив.
+        return response;
+    }
+    public String deleteAcc(Connection conn, String[]info)
+    {
+        try{
+            PreparedStatement pst = conn.prepareStatement("DELETE from registrbd where id = ?");
+            pst.setString(1,info[1]);
+            pst.executeUpdate();
+            response = "allGood";
+        }catch (SQLException e)
+        {
+            response = "errorKey";
+        }
         return response;
     }
 }

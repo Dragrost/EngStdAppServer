@@ -34,11 +34,20 @@ public class Server {
             case "Login":
                 response = user.login(conn,strings);
                 break;
+            case "getProgress":
+                response = String.valueOf(user.getQuantityCorrWords(conn,strings));
+                break;
             case "RandomGeneration":
                 response = user.randomGeneration(conn);
                 break;
+            case "AllQuestions":
+                response = user.getAllQuestions(conn);
+                break;
             case "AddWordsProgress":
                 response = user.AddWords(conn, strings);
+                break;
+            case "Delete":
+                response = user.deleteAcc(conn,strings);
                 break;
             default:
                 System.out.println("Что это за херня?!");
