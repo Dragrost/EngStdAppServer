@@ -143,7 +143,7 @@ public class User
     public String registration(Connection conn, String[] info)
     {
         try {
-            PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password, progress, correctwords) values (?, ?, ?, ?, ?);");
+            PreparedStatement pst = conn.prepareStatement("insert into registrbd (id, login, password, status, progress, correctwords) values (?, ?, ?, ?, ?, ?);");
 
             String[] result = {};
             Array addArr = conn.createArrayOf("text",result);
@@ -151,8 +151,9 @@ public class User
             pst.setString(1,info[1]);
             pst.setString(2,info[2]);
             pst.setString(3,info[3]);
-            pst.setInt(4,0);
-            pst.setArray(5,addArr);
+            pst.setString(4,"USER");
+            pst.setInt(5,0);
+            pst.setArray(6,addArr);
             pst.executeUpdate();
             response = "allGood";
         } catch (SQLException e) {

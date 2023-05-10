@@ -16,42 +16,35 @@ public class Server {
         String password = "Lbvf04Lfd4568520";
         conn = DriverManager.getConnection(url, user, password);
     }
+
+    private static String getStatus(String request)
+    {
+        String[] info = request.split(",");
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT status FROM registrbd where id = '" + info[1] + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+            return result.getString(1);
+        } catch (SQLException e) {
+            return "errorKey";
+        }
+    }
     private static void methodSelector(String request) throws SQLException {
         String[] strings = request.split(",");
         User user = new User();
         String command = strings[0];
-        switch (command)
-        {
-            case "GetID":
-                response = user.getID(conn,strings);
-                break;
-            case "GetLogin":
-                response = user.getLogin(conn,strings);
-                break;
-            case "Registration":
-                response = user.registration(conn,strings);
-                break;
-            case "Login":
-                response = user.login(conn,strings);
-                break;
-            case "getProgress":
-                response = String.valueOf(user.getQuantityCorrWords(conn,strings));
-                break;
-            case "RandomGeneration":
-                response = user.randomGeneration(conn);
-                break;
-            case "AllQuestions":
-                response = user.getAllQuestions(conn);
-                break;
-            case "AddWordsProgress":
-                response = user.AddWords(conn, strings);
-                break;
-            case "Delete":
-                response = user.deleteAcc(conn,strings);
-                break;
-            default:
-                System.out.println("Что это за херня?!");
-                break;
+        switch (command) {
+            case "GetID" -> response = user.getID(conn, strings);
+            case "GetLogin" -> response = user.getLogin(conn, strings);
+            case "Registration" -> response = user.registration(conn, strings);
+            case "Login" -> response = user.login(conn, strings);
+            case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(conn, strings));
+            case "RandomGeneration" -> response = user.randomGeneration(conn);
+            case "AllQuestions" -> response = user.getAllQuestions(conn);
+            case "AddWordsProgress" -> response = user.AddWords(conn, strings);
+            case "Delete" -> response = user.deleteAcc(conn, strings);
+            case "GetStatus" -> response = getStatus(request);
+            default -> System.out.println("Что-то не то");
         }
     }
     public static void main(String[] args) {
