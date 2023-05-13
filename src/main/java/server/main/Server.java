@@ -32,18 +32,24 @@ public class Server {
     private static void methodSelector(String request) throws SQLException {
         String[] strings = request.split(",");
         User user = new User();
+        Administrator admin = new Administrator(conn);
         String command = strings[0];
         switch (command) {
-            case "GetID" -> response = user.getID(conn, strings);
-            case "GetLogin" -> response = user.getLogin(conn, strings);
+            case "GetID" -> response = user.getID(conn, strings);//
+            case "GetLogin" -> response = user.getLogin(conn, strings);//
             case "Registration" -> response = user.registration(conn, strings);
-            case "Login" -> response = user.login(conn, strings);
+            case "Login" -> response = user.login(conn, strings);//
             case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(conn, strings));
             case "RandomGeneration" -> response = user.randomGeneration(conn);
             case "AllQuestions" -> response = user.getAllQuestions(conn);
             case "AddWordsProgress" -> response = user.AddWords(conn, strings);
             case "Delete" -> response = user.deleteAcc(conn, strings);
-            case "GetStatus" -> response = getStatus(request);
+            case "GetStatus" -> response = getStatus(request);//
+
+            case "AddWords" -> response = admin.addWordToSlovar(strings);
+            case "AddTest" -> response = admin.addTest(strings);
+            case "DeleteWords" -> response = admin.deleteWords(strings);
+            case "DeleteTest" -> response = admin.deleteTest(strings);
             default -> System.out.println("Что-то не то");
         }
     }

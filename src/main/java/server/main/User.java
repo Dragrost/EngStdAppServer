@@ -29,14 +29,14 @@ public class User
                 PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + correctWords.get(i) + "'");
                 ResultSet result = rs.executeQuery();
                 result.next();
-                correctWords.set(i, result.getString(1));
+                correctWords.set(i, String.valueOf(result.getInt(1)));
             }
             for (int i = 0; i < incorrectWords.size();i++)
             {
                 PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + incorrectWords.get(i) + "'");
                 ResultSet result = rs.executeQuery();
                 result.next();
-                incorrectWords.set(i, result.getString(1));
+                incorrectWords.set(i, String.valueOf(result.getString(1)));
             }
             response = "allGood";
         } catch (SQLException e) {
