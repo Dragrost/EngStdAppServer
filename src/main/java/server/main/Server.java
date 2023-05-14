@@ -50,6 +50,8 @@ public class Server {
             case "AddTest" -> response = admin.addTest(strings);
             case "DeleteWords" -> response = admin.deleteWords(strings);
             case "DeleteTest" -> response = admin.deleteTest(strings);
+            case "checkAverageProgress" -> response = admin.checkAverageProgress();
+            case "getQuantityWords" -> response = String.valueOf(admin.getMaxId("engruswords"));
             default -> System.out.println("Что-то не то");
         }
     }
