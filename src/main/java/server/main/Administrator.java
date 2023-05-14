@@ -4,12 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Administrator
+public class Administrator extends AbstractUser
 {
-    private Connection conn;
-    private ArrayList<String> data = new ArrayList<>();
-    private String response = "";
-
+    private final ArrayList<String> data = new ArrayList<>();
     private Array createArray(int num) throws SQLException {
         final int STEP = 6;
         int j = 0;
@@ -38,8 +35,7 @@ public class Administrator
         result.next();
         return result.getInt(1);
     }
-    Administrator(Connection conn) {this.conn = conn;}
-
+    Administrator(Connection conn) {super(conn);}
     public String addWordToSlovar(String[] info) throws SQLException {
         int i = 0;
         processingStr(info);
@@ -126,6 +122,19 @@ public class Administrator
             result.next();
 
             response = String.valueOf(result.getFloat(1));
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return response;
+    }
+    public String getQuantityWordsTest(String test)
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT cardinality(question) FROM mytests where id = '" + test + "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+
+            response = String.valueOf(result.getInt(1));
         } catch (SQLException e) {
             response = "errorKey";
         }

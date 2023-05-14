@@ -16,42 +16,30 @@ public class Server {
         String password = "Lbvf04Lfd4568520";
         conn = DriverManager.getConnection(url, user, password);
     }
-
-    private static String getStatus(String request)
-    {
-        String[] info = request.split(",");
-        try {
-            PreparedStatement rs = conn.prepareStatement("SELECT status FROM registrbd where id = '" + info[1] + "'");
-            ResultSet result = rs.executeQuery();
-            result.next();
-            return result.getString(1);
-        } catch (SQLException e) {
-            return "errorKey";
-        }
-    }
     private static void methodSelector(String request) throws SQLException {
         String[] strings = request.split(",");
-        User user = new User();
+        User user = new User(conn);
         Administrator admin = new Administrator(conn);
         String command = strings[0];
         switch (command) {
-            case "GetID" -> response = user.getID(conn, strings);//
-            case "GetLogin" -> response = user.getLogin(conn, strings);//
-            case "Registration" -> response = user.registration(conn, strings);
-            case "Login" -> response = user.login(conn, strings);//
-            case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(conn, strings));
-            case "RandomGeneration" -> response = user.randomGeneration(conn);
-            case "AllQuestions" -> response = user.getAllQuestions(conn);
-            case "AddWordsProgress" -> response = user.AddWords(conn, strings);
-            case "Delete" -> response = user.deleteAcc(conn, strings);
-            case "GetStatus" -> response = getStatus(request);//
+            case "GetID" -> response = user.getID(strings);//
+            case "GetLogin" -> response = user.getLogin(strings);//
+            case "Registration" -> response = user.registration(strings);
+            case "Login" -> response = user.login(strings);//
+            case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(strings));
+            case "RandomGeneration" -> response = user.randomGeneration();
+            case "AllQuestions" -> response = user.getAllQuestions();
+            case "AddWordsProgress" -> response = user.AddWords(strings);
+            case "Delete" -> response = user.deleteAcc(strings);
+            case "GetStatus" -> response = user.getStatus(request);//
 
             case "AddWords" -> response = admin.addWordToSlovar(strings);
             case "AddTest" -> response = admin.addTest(strings);
             case "DeleteWords" -> response = admin.deleteWords(strings);
             case "DeleteTest" -> response = admin.deleteTest(strings);
             case "checkAverageProgress" -> response = admin.checkAverageProgress();
-            case "getQuantityWords" -> response = String.valueOf(admin.getMaxId("engruswords"));
+            case "getQuantityWords" -> response = String.valueOf(admin.getMaxId(strings[1]));
+            case "getQuantityWordsTest" -> response = String.valueOf(admin.getQuantityWordsTest(strings[1]));
             default -> System.out.println("Что-то не то");
         }
     }
