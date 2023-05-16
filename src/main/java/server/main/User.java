@@ -6,7 +6,6 @@ import java.util.Collections;
 
 public class User extends AbstractUser
 {
-    private final int MAX_WORDS = 1025;
     private final ArrayList<String> correctWords = new ArrayList<>();
     private final ArrayList<String> incorrectWords = new ArrayList<>();
     private ArrayList<String> researchedWords = new ArrayList<>();
@@ -141,6 +140,18 @@ public class User extends AbstractUser
         System.out.println(info[2]);
         return response;
     }
+    private String buildResultStr(ArrayList<String>strings,String[] info)
+    {
+        final int NUMBER_OF_TEST = 1;
+        int STEP = Integer.parseInt(getQuantityWordsTest(info[NUMBER_OF_TEST]));
+        String result = "";
+        for (int i = 0; i < STEP;i++)
+            for (int j = i; j < strings.size();j+=STEP)
+                result += "!" + strings.get(j);
+
+        return result;
+    }
+
     public String randomGeneration()
     {
         final int MAX_QUESTIONS = 20;
@@ -150,7 +161,7 @@ public class User extends AbstractUser
             int i = 0;
             while (i < MAX_QUESTIONS*4)
             {
-                randKey = (int)(Math.random() * MAX_WORDS) + 1;
+                randKey = (int)(Math.random() * getMaxId("engruswords")) + 1;
                 if (!similarId.contains(String.valueOf(randKey)))
                 {
                     PreparedStatement rs = conn.prepareStatement("SELECT engwords, ruswords FROM engruswords WHERE id = '" + randKey + "'");
@@ -201,6 +212,27 @@ public class User extends AbstractUser
             pst.setString(1,info[1]);
             pst.executeUpdate();
             response = "allGood";
+        }catch (SQLException e)
+        {
+            response = "errorKey";
+        }
+        return response;
+    }
+
+    public String AdminTest(String[] info)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        Array arr;
+        final int BEGIN = 1, END = 6;
+        try{
+            PreparedStatement rs = conn.prepareStatement("SELECT question,ans1,ans2,ans3,ans4,typequestion FROM mytests WHERE id = '" +info[1]+ "'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+            for (int i = BEGIN; i <= END;i++) {
+                arr = result.getArray(i);
+                Collections.addAll(list,(String[]) arr.getArray());
+            }
+            response += buildResultStr(list, info);
         }catch (SQLException e)
         {
             response = "errorKey";

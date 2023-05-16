@@ -22,16 +22,17 @@ public class Server {
         Administrator admin = new Administrator(conn);
         String command = strings[0];
         switch (command) {
-            case "GetID" -> response = user.getID(strings);//
-            case "GetLogin" -> response = user.getLogin(strings);//
+            case "GetID" -> response = user.getID(strings);
+            case "GetLogin" -> response = user.getLogin(strings);
             case "Registration" -> response = user.registration(strings);
-            case "Login" -> response = user.login(strings);//
+            case "Login" -> response = user.login(strings);
             case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(strings));
             case "RandomGeneration" -> response = user.randomGeneration();
             case "AllQuestions" -> response = user.getAllQuestions();
             case "AddWordsProgress" -> response = user.AddWords(strings);
             case "Delete" -> response = user.deleteAcc(strings);
-            case "GetStatus" -> response = user.getStatus(request);//
+            case "GetStatus" -> response = user.getStatus(request);
+            case "AdminTest" -> response = user.AdminTest(strings);
 
             case "AddWords" -> response = admin.addWordToSlovar(strings);
             case "AddTest" -> response = admin.addTest(strings);

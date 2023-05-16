@@ -29,12 +29,6 @@ public class Administrator extends AbstractUser
         if (!info[REQUEST].equals("AddTest"))
             data.removeAll(Collections.singleton("Английский"));
     }
-    public int getMaxId(String table) throws SQLException {
-        PreparedStatement rs = conn.prepareStatement("SELECT id FROM " + table + " ORDER BY id DESC LIMIT 1");
-        ResultSet result = rs.executeQuery();
-        result.next();
-        return result.getInt(1);
-    }
     Administrator(Connection conn) {super(conn);}
     public String addWordToSlovar(String[] info) throws SQLException {
         int i = 0;
@@ -122,19 +116,6 @@ public class Administrator extends AbstractUser
             result.next();
 
             response = String.valueOf(result.getFloat(1));
-        } catch (SQLException e) {
-            response = "errorKey";
-        }
-        return response;
-    }
-    public String getQuantityWordsTest(String test)
-    {
-        try {
-            PreparedStatement rs = conn.prepareStatement("SELECT cardinality(question) FROM mytests where id = '" + test + "'");
-            ResultSet result = rs.executeQuery();
-            result.next();
-
-            response = String.valueOf(result.getInt(1));
         } catch (SQLException e) {
             response = "errorKey";
         }
