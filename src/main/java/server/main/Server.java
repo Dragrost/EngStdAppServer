@@ -33,6 +33,7 @@ public class Server {
             case "Delete" -> response = user.deleteAcc(strings);
             case "GetStatus" -> response = user.getStatus(request);
             case "AdminTest" -> response = user.AdminTest(strings);
+            case "checkWordsID" -> response = user.checkWordsID(strings);
 
             case "AddWords" -> response = admin.addWordToSlovar(strings);
             case "AddTest" -> response = admin.addTest(strings);

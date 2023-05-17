@@ -90,4 +90,23 @@ public class AbstractUser {
         }
         return response;
     }
+
+    private int wordsRequest(String word)
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + word + "' OR ruswords = '" + word +"'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+            return result.getInt(1);
+
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return -1;
+    }
+    public String checkWordsID(String[] words)
+    {
+        System.out.println(wordsRequest(words[1]) + "/" + wordsRequest(words[2]));
+        return (wordsRequest(words[1]) == wordsRequest(words[2])) ? "allGood" : "errorKey";
+    }
 }
