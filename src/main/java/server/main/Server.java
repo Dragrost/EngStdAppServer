@@ -34,6 +34,7 @@ public class Server {
             case "GetStatus" -> response = user.getStatus(request);
             case "AdminTest" -> response = user.AdminTest(strings);
             case "checkWordsID" -> response = user.checkWordsID(strings);
+            case "GetWordsTable" -> response = user.getWordsTable();
 
             case "AddWords" -> response = admin.addWordToSlovar(strings);
             case "AddTest" -> response = admin.addTest(strings);

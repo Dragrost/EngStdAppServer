@@ -239,4 +239,22 @@ public class User extends AbstractUser
         }
         return response;
     }
+    public String getWordsTable()
+    {
+        try{
+            PreparedStatement rs = conn.prepareStatement("SELECT engwords,transcription,ruswords FROM engruswords");
+            ResultSet result = rs.executeQuery();
+            while (result.next())
+            {
+                response += result.getString(1) + "!";
+                response += result.getString(2) + "!";
+                response += result.getString(3) + "!";
+            }
+
+        }catch (SQLException e)
+        {
+            response = "errorKey";
+        }
+        return response;
+    }
 }
