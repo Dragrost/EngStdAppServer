@@ -41,9 +41,10 @@ public class Server {
             case "AddTest" -> response = admin.addTest(strings);
             case "DeleteWords" -> response = admin.deleteWords(strings);
             case "DeleteTest" -> response = admin.deleteTest(strings);
-            case "checkAverageProgress" -> response = admin.checkAverageProgress();
+            case "PersonProgress" -> response = admin.PersonProgress();
             case "getQuantityWords" -> response = String.valueOf(admin.getMaxId(strings[1]));
             case "getQuantityWordsTest" -> response = String.valueOf(admin.getQuantityWordsTest(strings[1]));
+            case "GetEngTable" -> response = admin.getEngTable();
             default -> System.out.println("Что-то не то");
         }
     }

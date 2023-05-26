@@ -108,14 +108,29 @@ public class Administrator extends AbstractUser
         return response;
     }
 
-    public String checkAverageProgress()
+    public String PersonProgress()
     {
         try {
-            PreparedStatement rs = conn.prepareStatement("SELECT AVG(progress) FROM registrBD where status = 'USER'");
+            PreparedStatement rs = conn.prepareStatement("SELECT id,login,progress FROM registrbd WHERE status = 'USER'");
             ResultSet result = rs.executeQuery();
-            result.next();
-
-            response = String.valueOf(result.getFloat(1));
+            while (result.next())
+            {
+                response += "!" + result.getString(1) + "!" + result.getString(2) + "!" + result.getString(3);
+            }
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return response;
+    }
+    public String getEngTable()
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT id,engwords,ruswords FROM engruswords");
+            ResultSet result = rs.executeQuery();
+            while (result.next())
+            {
+                response += "!" + result.getString(1) + "!" + result.getString(2) + "!" + result.getString(3);
+            }
         } catch (SQLException e) {
             response = "errorKey";
         }
