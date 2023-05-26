@@ -109,4 +109,17 @@ public class AbstractUser {
         System.out.println(wordsRequest(words[1]) + "/" + wordsRequest(words[2]));
         return (wordsRequest(words[1]) == wordsRequest(words[2])) ? "allGood" : "errorKey";
     }
+    public String getWordFromWord(String word)
+    {
+        try {
+            PreparedStatement rs = conn.prepareStatement("SELECT engwords,ruswords FROM engruswords WHERE engwords = '" + word + "' OR ruswords = '" + word +"'");
+            ResultSet result = rs.executeQuery();
+            result.next();
+            response = result.getString(1) + "!" + result.getString(2);
+
+        } catch (SQLException e) {
+            response = "errorKey";
+        }
+        return response;
+    }
 }
