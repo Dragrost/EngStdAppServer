@@ -30,7 +30,7 @@ public class Administrator extends AbstractUser
             data.removeAll(Collections.singleton("Английский"));
     }
     Administrator(Connection conn) {super(conn);}
-    public String addWordToSlovar(String[] info) throws SQLException {
+    public String addWordToSlovar(String[] info){
         int i = 0;
         processingStr(info);
         int lastIdx = getMaxId("engruswords");
@@ -108,7 +108,7 @@ public class Administrator extends AbstractUser
         return response;
     }
 
-    public String PersonProgress()
+    public String personProgress()
     {
         try {
             PreparedStatement rs = conn.prepareStatement("SELECT id,login,progress FROM registrbd WHERE status = 'USER'");

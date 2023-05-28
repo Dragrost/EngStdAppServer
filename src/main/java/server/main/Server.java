@@ -41,7 +41,7 @@ public class Server {
             case "AddTest" -> response = admin.addTest(strings);
             case "DeleteWords" -> response = admin.deleteWords(strings);
             case "DeleteTest" -> response = admin.deleteTest(strings);
-            case "PersonProgress" -> response = admin.PersonProgress();
+            case "PersonProgress" -> response = admin.personProgress();
             case "getQuantityWords" -> response = String.valueOf(admin.getMaxId(strings[1]));
             case "getQuantityWordsTest" -> response = String.valueOf(admin.getQuantityWordsTest(strings[1]));
             case "GetEngTable" -> response = admin.getEngTable();
