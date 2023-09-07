@@ -9,6 +9,12 @@ public class AbstractUser {
     Connection conn;
     protected String response = "";
     AbstractUser(Connection connection) {conn = connection;}
+
+    /**
+     * Получение ID по логину
+     * @param info
+     * @return
+     */
     public String getID(String[] info)
     {
         try {
@@ -22,6 +28,12 @@ public class AbstractUser {
         }
         return response;
     }
+
+    /**
+     * Получение логина по ID
+     * @param info
+     * @return
+     */
     public String getLogin(String[] info)
     {
         try {
@@ -36,7 +48,12 @@ public class AbstractUser {
         return response;
     }
 
-    public String login(String[] info)
+    /**
+     * Проверка на правильность введённого пароля
+     * @param info
+     * @return
+     */
+    public String loginInfo(String[] info)
     {
         try{
             PreparedStatement rs = conn.prepareStatement("SELECT password FROM registrbd WHERE login = '" + info[1] + "'");
@@ -53,6 +70,11 @@ public class AbstractUser {
         return response;
     }
 
+    /**
+     * Получить статус пользователя
+     * @param request
+     * @return
+     */
     public String getStatus(String request)
     {
         String[] info = request.split(",");
@@ -65,6 +87,12 @@ public class AbstractUser {
             return "errorKey";
         }
     }
+
+    /**
+     * Получение максимального ID
+     * @param table
+     * @return
+     */
     public int getMaxId(String table)
     {
         try {
@@ -77,6 +105,12 @@ public class AbstractUser {
             return -1;
         }
     }
+
+    /**
+     * Получить количество готовых тестов
+     * @param test
+     * @return
+     */
     public String getQuantityWordsTest(String test)
     {
         try {
@@ -91,7 +125,12 @@ public class AbstractUser {
         return response;
     }
 
-    private int wordsRequest(String word)
+    /**
+     * Получить ID слова
+     * @param word
+     * @return
+     */
+    private int getWordID(String word)
     {
         try {
             PreparedStatement rs = conn.prepareStatement("SELECT id FROM engruswords WHERE engwords = '" + word + "' OR ruswords = '" + word +"'");
@@ -102,13 +141,25 @@ public class AbstractUser {
         } catch (SQLException e) {
             response = "errorKey";
         }
-        return -1;
+        return 0;
     }
+
+    /**
+     * Сверяет ID 2х слов
+     * @param words
+     * @return
+     */
     public String checkWordsID(String[] words)
     {
-        System.out.println(wordsRequest(words[1]) + "/" + wordsRequest(words[2]));
-        return (wordsRequest(words[1]) == wordsRequest(words[2])) ? "allGood" : "errorKey";
+        System.out.println(getWordID(words[1]) + "/" + getWordID(words[2]));
+        return (getWordID(words[1]) == getWordID(words[2])) ? "allGood" : "errorKey";
     }
+
+    /**
+     * Получение перевода и самого слова
+     * @param word
+     * @return
+     */
     public String getWordFromWord(String word)
     {
         try {

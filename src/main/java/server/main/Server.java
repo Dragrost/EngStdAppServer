@@ -25,7 +25,7 @@ public class Server {
             case "GetID" -> response = user.getID(strings);
             case "GetLogin" -> response = user.getLogin(strings);
             case "Registration" -> response = user.registration(strings);
-            case "Login" -> response = user.login(strings);
+            case "Login" -> response = user.loginInfo(strings);
             case "getProgress" -> response = String.valueOf(user.getQuantityCorrWords(strings));
             case "RandomGeneration" -> response = user.randomGeneration();
             case "AllQuestions" -> response = user.getAllQuestions();
