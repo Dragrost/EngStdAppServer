@@ -30,18 +30,18 @@ public class Server {
             case "RandomGeneration" -> response = user.randomGeneration();
             case "AllQuestions" -> response = user.getAllQuestions();
             case "AddWordsProgress" -> response = user.AddWords(strings);
-            case "Delete" -> response = user.deleteAcc(strings);
+            case "Delete" -> response = user.deleteAccount(strings);
             case "GetStatus" -> response = user.getStatus(request);
-            case "AdminTest" -> response = user.AdminTest(strings);
+            case "getAdminTest" -> response = user.getAdminTest(strings);
             case "checkWordsID" -> response = user.checkWordsID(strings);
             case "GetWordsTable" -> response = user.getWordsTable();
             case "getWordFromWord" -> response = user.getWordFromWord(strings[1]);
 
-            case "AddWords" -> response = admin.addWordToSlovar(strings);
+            case "AddWords" -> response = admin.addWordToDictionary(strings);
             case "AddTest" -> response = admin.addTest(strings);
             case "DeleteWords" -> response = admin.deleteWords(strings);
             case "DeleteTest" -> response = admin.deleteTest(strings);
-            case "PersonProgress" -> response = admin.personProgress();
+            case "PersonProgress" -> response = admin.getPersonProgress();
             case "getQuantityWords" -> response = String.valueOf(admin.getMaxId(strings[1]));
             case "getQuantityWordsTest" -> response = String.valueOf(admin.getQuantityWordsTest(strings[1]));
             case "GetEngTable" -> response = admin.getEngTable();
@@ -52,7 +52,7 @@ public class Server {
         try (ServerSocket server = new ServerSocket(8000))
         {
             connectToBD();
-            System.out.println("Сервак стартанул");
+            System.out.println("Сервер запущен");
             while (true) {
                 GeneralComm communication = new GeneralComm(server);
                 new Thread(() -> {

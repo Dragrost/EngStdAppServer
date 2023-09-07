@@ -14,16 +14,29 @@ public class User extends AbstractUser
         super(connection);
     }
 
+    /**
+     * Добавление в arraylist слов
+     * @param info
+     */
     private void processStrings(String[] info)
     {
         final int CORRECT_WORDS = 2;
         final int INCORRECT_WORDS = 3;
-        try {Collections.addAll(correctWords, info[CORRECT_WORDS].split("!"));}
-        catch (Exception e) {correctWords.add("");}
-        try {Collections.addAll(incorrectWords, info[INCORRECT_WORDS].split("!"));}
-        catch (Exception e) {incorrectWords.add("");}
+        try {
+            Collections.addAll(correctWords, info[CORRECT_WORDS].split("!"));
+        } catch (Exception e) {
+            correctWords.add("");
+        }
+        try {
+            Collections.addAll(incorrectWords, info[INCORRECT_WORDS].split("!"));
+        } catch (Exception e) {
+            incorrectWords.add("");
+        }
     }
 
+    /**
+     * Получение массив ID слов
+     */
     private void getWordsID()
     {
         try {
@@ -47,6 +60,11 @@ public class User extends AbstractUser
         }
     }
 
+    /**
+     * Получение массива исследованных пользователем слов
+     * @param info
+     * @return
+     */
     private ArrayList<String> getResearched(String[] info)
     {
         ArrayList<String> researched = new ArrayList<>();
@@ -62,6 +80,11 @@ public class User extends AbstractUser
         return researched;
     }
 
+    /**
+     * Получение количество исследованных слов
+     * @param info
+     * @return
+     */
     public int getQuantityCorrWords(String[] info)
     {
         final int ID = 1;
@@ -76,7 +99,12 @@ public class User extends AbstractUser
         }
         return 0;
     }
-    private void arrayReBuild(String[] info)
+
+    /**
+     * Обновление изученных слов пользователей
+     * @param info
+     */
+    private void arrayRebuild(String[] info)
     {
         int progress = getQuantityCorrWords(info);
         researchedWords = getResearched(info);
@@ -97,6 +125,11 @@ public class User extends AbstractUser
         sendData(progress,info);
     }
 
+    /**
+     * Обновление данных
+     * @param progress
+     * @param info
+     */
     private void sendData(int progress, String[] info)
     {
         try {
@@ -114,7 +147,7 @@ public class User extends AbstractUser
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Что-то не так");
+            System.out.println("Не получилось обновить данные");
         }
     }
     public String registration(String[] info)
@@ -136,10 +169,15 @@ public class User extends AbstractUser
         } catch (SQLException e) {
             response = "errorKey";
         }
-        System.out.println(info[1]);
-        System.out.println(info[2]);
         return response;
     }
+
+    /**
+     *
+     * @param strings
+     * @param info
+     * @return
+     */
     private String buildResultStr(ArrayList<String>strings,String[] info)
     {
         final int NUMBER_OF_TEST = 1;
@@ -148,10 +186,13 @@ public class User extends AbstractUser
         for (int i = 0; i < STEP;i++)
             for (int j = i; j < strings.size();j+=STEP)
                 result += "!" + strings.get(j);
-
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public String randomGeneration()
     {
         final int MAX_QUESTIONS = 20;
@@ -159,8 +200,7 @@ public class User extends AbstractUser
         int randKey;
         try{
             int i = 0;
-            while (i < MAX_QUESTIONS*4)
-            {
+            while (i < MAX_QUESTIONS*4) {
                 randKey = (int)(Math.random() * getMaxId("engruswords")) + 1;
                 if (!similarId.contains(String.valueOf(randKey)))
                 {
@@ -174,13 +214,16 @@ public class User extends AbstractUser
                     i++;
                 }
             }
-        }catch (SQLException e)
-        {
+        }catch (SQLException e) {
             response = "errorKey";
         }
         return response;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAllQuestions()
     {
         try{
@@ -198,14 +241,21 @@ public class User extends AbstractUser
         }
         return response;
     }
+
     public String AddWords(String[] info)
     {
         processStrings(info);//Слова превращаем в ID
         getWordsID();//Получаем массив ID слов.
-        arrayReBuild(info); //Пробегаемся по каждому слову, если его нет, добавляем в исходный массив.
+        arrayRebuild(info); //Пробегаемся по каждому слову, если его нет, добавляем в исходный массив.
         return response;
     }
-    public String deleteAcc(String[]info)
+
+    /**
+     * Удаление аккаунта пользователя
+     * @param info
+     * @return
+     */
+    public String deleteAccount(String[]info)
     {
         try{
             PreparedStatement pst = conn.prepareStatement("DELETE from registrbd where id = ?");
@@ -219,7 +269,12 @@ public class User extends AbstractUser
         return response;
     }
 
-    public String AdminTest(String[] info)
+    /**
+     * Получить тест, созданный администратором
+     * @param info
+     * @return
+     */
+    public String getAdminTest(String[] info)
     {
         ArrayList<String> list = new ArrayList<>();
         Array arr;
@@ -239,6 +294,11 @@ public class User extends AbstractUser
         }
         return response;
     }
+
+    /**
+     * Получить слово с его переводом и транскрипцией
+     * @return
+     */
     public String getWordsTable()
     {
         try{

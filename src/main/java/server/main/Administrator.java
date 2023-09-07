@@ -7,19 +7,26 @@ import java.util.Collections;
 public class Administrator extends AbstractUser
 {
     private final ArrayList<String> data = new ArrayList<>();
-    private Array createArray(int num) throws SQLException {
+    Administrator(Connection conn) {super(conn);}
+    /**
+     * Создание массива. Всего 6 элементов на добавление. 1 - слово вопрос, 5 - слова-ответ и 1 - тип вопроса (Англ, русс).
+     * Добавление происходит по столбцам, поэтому шаг через 6.
+     * @param numColumn
+     * @return
+     * @throws SQLException
+     */
+    private Array createArray(int numColumn) throws SQLException {
         final int STEP = 6;
-        int j = 0;
-        String[] dataStr = new String[data.size()/6];
-        for (int i = num; i < data.size(); i+=STEP)
-        {
+        String[] dataStr = new String[data.size()/STEP];
+        for (int i = numColumn, j = 0; i < data.size(); i+=STEP, j++)
             dataStr[j] = data.get(i);
-            j++;
-        }
-
-        Array addArr = conn.createArrayOf("text",dataStr);
-        return addArr;
+        return conn.createArrayOf("text",dataStr);
     }
+
+    /**
+     * Добавление слов в строке, разделённых пробелом в arraylist, переданных на добавление из клиента.
+     * @param info
+     */
     private void processingStr(String[] info)
     {
         final int DATA = 1, REQUEST = 0;
@@ -29,8 +36,12 @@ public class Administrator extends AbstractUser
         if (!info[REQUEST].equals("AddTest"))
             data.removeAll(Collections.singleton("Английский"));
     }
-    Administrator(Connection conn) {super(conn);}
-    public String addWordToSlovar(String[] info){
+    /**
+     * Добавление слов в словарь
+     * @param info
+     * @return
+     */
+    public String addWordToDictionary(String[] info){
         int i = 0;
         processingStr(info);
         int lastIdx = getMaxId("engruswords");
@@ -50,6 +61,12 @@ public class Administrator extends AbstractUser
         }
         return response;
     }
+
+    /**
+     * Добавление теста. В массиве хранятся все слова, полученных от администатора
+     * @param info
+     * @return
+     */
     public String addTest(String[] info)
     {
         processingStr(info);
@@ -71,11 +88,16 @@ public class Administrator extends AbstractUser
         }
         return response;
     }
-    public String deleteWords(String[] info)
-    {
+
+    /**
+     * Удаление слов из словаря
+     * @param info
+     * @return
+     */
+    public String deleteWords(String[] info) {
         processingStr(info);
 
-        try{
+        try {
             for (int DELETE_NUMBER = 0; DELETE_NUMBER < data.size();DELETE_NUMBER++)
             {
                 PreparedStatement pst = conn.prepareStatement("DELETE from engruswords where id = ?");
@@ -83,12 +105,17 @@ public class Administrator extends AbstractUser
                 pst.executeUpdate();
             }
             response = "allGood";
-        }catch (Exception e)
-        {
+        }catch (Exception e) {
             response = "errorNumKey";
         }
         return response;
     }
+
+    /**
+     * Удаление теста
+     * @param info
+     * @return
+     */
     public String deleteTest(String[] info)
     {
         processingStr(info);
@@ -108,7 +135,11 @@ public class Administrator extends AbstractUser
         return response;
     }
 
-    public String personProgress()
+    /**
+     * Получение информации об пользователе
+     * @return
+     */
+    public String getPersonProgress()
     {
         try {
             PreparedStatement rs = conn.prepareStatement("SELECT id,login,progress FROM registrbd WHERE status = 'USER'");
@@ -122,6 +153,11 @@ public class Administrator extends AbstractUser
         }
         return response;
     }
+
+    /**
+     * Получение таблицы слов
+     * @return
+     */
     public String getEngTable()
     {
         try {
